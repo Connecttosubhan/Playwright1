@@ -1,4 +1,7 @@
 import {test, expect} from  '@playwright/test'
+import * as path from 'path';
+
+
 
 import date from '../data/test1.json'
 
@@ -31,17 +34,24 @@ test.describe("Date handling", () => {
 
         //await page.pause();
     })
-    test('file upload', async ({page})=> {
+  test('file upload', async ({ page }) => {
+    // Step 2: Use path.resolve or path.join to dynamically build absolute paths
+    // This automatically handles '/' for Linux/Jenkins and '\' for Windows
+    const file1 = path.resolve(__dirname, '../tests/test-assets/upload sample.pdf');
+    const file2 = path.resolve(__dirname, '../tests/test-assets/upload sample1.pdf');
 
-        await page.locator('#singleFileInput').setInputFiles("tests\\test-assets\\upload sample.pdf")
-        await page.locator("//button[contains(text(),'Upload Single File')]").click()
+    // Single file upload
+    await page.locator('#singleFileInput').setInputFiles(file1);
+    await page.locator("//button[contains(text(),'Upload Single File')]").click();
 
-        await page.locator('#multipleFilesInput').setInputFiles(["tests\\test-assets\\upload sample.pdf", "tests\\test-assets\\upload sample1.pdf"])
-        await page.locator("//button[contains(text(),'Upload Multiple Files')]").click()
+    // Multiple file upload
+    await page.locator('#multipleFilesInput').setInputFiles([file1, file2]);
+    await page.locator("//button[contains(text(),'Upload Multiple Files')]").click();
 
-        //await page.pause()
-    
-    })
+    // Best Practice: Add an assertion here to verify the upload succeeded
+    // This prevents the test from passing silently if the server errors out
+    // await expect(page.locator('.success-message')).toBeVisible();
+});
     test('Table', async ({page}) =>{
         let table : UserRow[] = await page.$$eval('table[name="BookTable"] tbody tr', (rows) => {
         return rows.map(row => {
