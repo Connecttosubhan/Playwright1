@@ -3,7 +3,7 @@ pipeline {
     
     tools {
         // Injects your configured Node setup into the pipeline path
-        nodejs 'node20'
+        nodejs 'node26'
     }
     
     stages {
