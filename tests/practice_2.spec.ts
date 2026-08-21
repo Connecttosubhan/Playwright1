@@ -33,10 +33,10 @@ test.describe("Date handling", () => {
     })
     test('file upload', async ({page})=> {
 
-        await page.locator('#singleFileInput').setInputFiles("C:\\Users\\user\\Downloads\\upload sample.pdf")
+        await page.locator('#singleFileInput').setInputFiles("tests\\test-assets\\upload sample.pdf")
         await page.locator("//button[contains(text(),'Upload Single File')]").click()
 
-        await page.locator('#multipleFilesInput').setInputFiles(["C:\\Users\\user\\Downloads\\upload sample.pdf", "C:\\Users\\user\\Downloads\\upload sample1.pdf"])
+        await page.locator('#multipleFilesInput').setInputFiles(["tests\\test-assets\\upload sample.pdf", "tests\\test-assets\\upload sample1.pdf"])
         await page.locator("//button[contains(text(),'Upload Multiple Files')]").click()
 
         //await page.pause()

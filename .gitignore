@@ -1,0 +1,28 @@
+# Node dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Playwright specific outputs
+test-results/
+playwright-report/
+blob-report/
+results.xml
+**/results.xml
+
+# Playwright local browser binaries cache
+.playwright/
+
+# Local environment variables (Passwords, API Keys, Tokens)
+.env
+.env.local
+.env.*.local
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Optional: IDE settings (uncomment if you use VS Code or WebStorm)
+# .vscode/
+# .idea/
