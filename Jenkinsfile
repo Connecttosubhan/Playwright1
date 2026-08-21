@@ -1,10 +1,9 @@
 pipeline {
-    agent {
-        docker {
-            // Uses an environment already containing node, browsers, and OS libraries
-            image '://microsoft.com'
-            args '-u root' 
-        }
+    agent any
+    
+    tools {
+        // Injects your configured Node setup into the pipeline path
+        nodejs 'node20'
     }
     
     stages {
@@ -14,16 +13,17 @@ pipeline {
             }
         }
         
-        stage('Install Dependencies') {
+        stage('Install Dependencies & Browsers') {
             steps {
-                // Installs your npm packages cleanly
+                // Installs packages, browser binaries, and missing Linux OS libraries
                 sh 'npm ci'
+                sh 'npx playwright install --with-deps'
             }
         }
         
         stage('Execute Playwright Tests') {
             steps {
-                // Runs tests headlessly as configured in your playwright.config.js
+                // Runs headless tests
                 sh 'npx playwright test'
             }
         }
@@ -31,7 +31,7 @@ pipeline {
     
     post {
         always {
-            // Archives test results and HTML reports for review within Jenkins UI
+            // Archives automation test results inside the Jenkins UI
             junit 'results.xml'
             publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report'])
         }
