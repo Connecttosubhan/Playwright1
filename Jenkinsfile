@@ -1,9 +1,8 @@
 pipeline {
-    agent any
+    agent any 
     
     tools {
-        // Injects your configured Node setup into the pipeline path
-        nodejs 'Node26'
+        nodejs 'Node26' 
     }
     
     stages {
@@ -13,8 +12,15 @@ pipeline {
             }
         }
         
-        stage('Install Dependencies & Browsers') {
+        stage('Install System Fixes & Dependencies') {
             steps {
+                // Installs the missing system library required by Node.js 26
+                sh '''
+                    if command -v apt-get >/dev/null; then
+                        apt-get update && apt-get install -y libatomic1
+                    fi
+                '''
+                
                 // Installs packages, browser binaries, and missing Linux OS libraries
                 sh 'npm ci'
                 sh 'npx playwright install --with-deps'
@@ -23,7 +29,6 @@ pipeline {
         
         stage('Execute Playwright Tests') {
             steps {
-                // Runs headless tests
                 sh 'npx playwright test'
             }
         }
@@ -31,9 +36,16 @@ pipeline {
     
     post {
         always {
-            // Archives automation test results inside the Jenkins UI
-            junit 'results.xml'
-            publishHTML([allowMissing: true, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report'])
+            // Evaluates your test trends safely if the execution stage succeeds
+            junit allowEmptyResults: true, testResults: 'results.xml'
+            publishHTML([
+                allowMissing: true, 
+                alwaysLinkToLastBuild: true, 
+                keepAll: true, 
+                reportDir: 'playwright-report', 
+                reportFiles: 'index.html', 
+                reportName: 'Playwright HTML Report'
+            ])
         }
     }
 }
